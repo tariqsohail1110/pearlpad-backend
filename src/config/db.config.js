@@ -16,7 +16,6 @@ const pool = new Pool({
 
 export const initDB = async () => {
     try {
-        console.log(createUserTable);
         await pool.query(createUserTable);
         console.log('Tables Initialized');
     } catch (err) {
