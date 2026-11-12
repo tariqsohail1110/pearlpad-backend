@@ -1,6 +1,7 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 import { createUserTable } from '../modules/users/user.entity.js';
+import { logger } from './pinoLogger.js';
 
 dotenv.config();
 
@@ -14,22 +15,22 @@ const pool = new Pool({
     database: process.env.DB_NAME,
 });
 
-export const initDB = async () => {
-    try {
-        await pool.query(createUserTable);
-        console.log('Tables Initialized');
-    } catch (err) {
-        console.error('Error initializing tables:', err);
-    }
-};
-
 pool.connect((err, client, release) => {
     if (err) {
-        console.error('Database connection error:', err.stack);
+        logger.error('Database connection error:', err.stack);
     } else {
-        console.log('Database connected successfully');
+        logger.info('Database connected successfully');
         release();
     }
 });
+
+export const initDB = async () => {
+    try {
+        await pool.query(createUserTable);
+        logger.info('Tables Initialized');
+    } catch (err) {
+        logger.error('Error initializing tables:', err);
+    }
+};
 
 export default pool;
